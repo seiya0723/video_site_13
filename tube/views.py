@@ -300,75 +300,74 @@ class SingleModView(LoginRequiredMixin,views.APIView):
 
     def patch(self,request,video_pk,*args,**kwargs):
 
+        #TODO:自分の投稿した動画に対して良いね悪いねできてしまう問題の対処
+
         serializer  = RateSerializer(data=request.data)
 
-        if serializer.is_valid():
-
-            validated_data  = serializer.validated_data
-
-            if validated_data["flag"]:
-
-                data    = GoodVideo.objects.filter(user=request.user.id, target=video_pk).first()
-
-                if data:
-                    data.delete()
-                    print("削除")
-                else:
-                    data    = { "user":request.user.id,
-                                "target":video_pk,
-                                }
-                    serializer  = GoodSerializer(data=data)
-
-                    if serializer.is_valid():
-                        print("セーブ")
-                        serializer.save()
-                    else:
-                        print("バリデーションエラー")
-
-            else:
-
-                data    = BadVideo.objects.filter(user=request.user.id, target=video_pk).first()
-
-                if data:
-                    data.delete()
-                    print("削除")
-                else:
-                    data = {"user": request.user.id,
-                            "target": video_pk,
-                            }
-                    serializer = BadSerializer(data=data)
-
-                    if serializer.is_valid():
-                        print("セーブ")
-                        serializer.save()
-                    else:
-                        print("バリデーションエラー")
-
-            good         = GoodVideo.objects.filter(target=video_pk)
-            bad          = BadVideo.objects.filter(target=video_pk)
-            already_good = GoodVideo.objects.filter(target=video_pk, user=request.user.id)
-            already_bad  = BadVideo.objects.filter(target=video_pk, user=request.user.id)
-            video        = Video.objects.filter(id=video_pk).first()
-
-            context = {"good": good,
-                       "bad": bad,
-                       "already_good": already_good,
-                       "already_bad": already_bad,
-                       "video": video,
-                       }
-
-            content = render_to_string('tube/rate.html', context, request)
-
-            json = {"error": False,
-                    "message": "投稿完了",
-                    "content": content,
-                    }
-        else:
+        if not serializer.is_valid():
 
             json = {"error": True,
                     "message": "入力内容に誤りがあります。",
                     "content": "",
                     }
+
+            return JsonResponse(json)
+
+        validated_data  = serializer.validated_data
+
+        if validated_data["flag"]:
+
+            data    = GoodVideo.objects.filter(user=request.user.id, target=video_pk).first()
+            if data:
+                data.delete()
+                print("削除")
+            else:
+                data    = { "user":request.user.id,
+                            "target":video_pk,
+                            }
+                serializer  = GoodSerializer(data=data)
+
+                if serializer.is_valid():
+                    print("セーブ")
+                    serializer.save()
+                else:
+                    print("バリデーションエラー")
+        else:
+            data    = BadVideo.objects.filter(user=request.user.id, target=video_pk).first()
+            if data:
+                data.delete()
+                print("削除")
+            else:
+                data = {"user": request.user.id,
+                        "target": video_pk,
+                        }
+                serializer = BadSerializer(data=data)
+
+                if serializer.is_valid():
+                    print("セーブ")
+                    serializer.save()
+                else:
+                    print("バリデーションエラー")
+
+        good         = GoodVideo.objects.filter(target=video_pk)
+        bad          = BadVideo.objects.filter(target=video_pk)
+        already_good = GoodVideo.objects.filter(target=video_pk, user=request.user.id)
+        already_bad  = BadVideo.objects.filter(target=video_pk, user=request.user.id)
+        video        = Video.objects.filter(id=video_pk).first()
+
+        context = {"good": good,
+                   "bad": bad,
+                   "already_good": already_good,
+                   "already_bad": already_bad,
+                   "video": video,
+                   }
+
+        content = render_to_string('tube/rate.html', context, request)
+
+        json = {"error": False,
+                "message": "投稿完了",
+                "content": content,
+                }
 
         return JsonResponse(json)
 
