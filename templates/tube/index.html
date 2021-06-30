@@ -1,0 +1,166 @@
+{% extends "tube/base.html" %}
+{% load static %}
+{% load param_change %}
+
+{% block main %}
+
+{% block extra_head %}
+{{ block.super }}
+{% endblock %}
+
+
+
+{% block page_title %}{% endblock %}
+
+
+{% include "tube/search_form.html" %}
+
+
+    {% if recommends %}
+    <h2 class="violet">おすすめ</h2>
+
+    <div class="video_content_list">
+
+        <div class="video_content">
+            <a class="video_content_link" href="">
+                <img class="video_thumbnail" src="{% static 'tube/img/no-img.png' %}" alt="動画タイトル">
+                <div class="video_title">タイトル</div>
+            </a>
+        </div>
+
+    </div>
+    {% endif %}
+
+
+    {% if histories %}
+    <h2 class="violet">もう一度見る</h2>
+
+    <div class="video_content_list">
+
+        {% for history in histories %}
+        <div class="video_content">
+            <a class="video_content_link" href="{% url 'tube:single' history.target.id %}">
+                {% if history.target.thumbnail %}
+                <img class="video_thumbnail" src="/media/{{ history.target.thumbnail }}" alt="{{ history.target.title }}">
+                {% else %}
+                <img class="video_thumbnail" src="{% static 'tube/img/no-img.png' %}" alt="{{ history.target.title }}">
+                {% endif %}
+                <div class="video_title">{{ history.target.title }}</div>
+            </a>
+        </div>
+        {% endfor %}
+
+    </div>
+    {% endif %}
+
+
+    {% if ranks %}
+    <h2>総合ランキング</h2>
+
+    <div class="video_content_list">
+        <div class="video_content">
+            <a class="video_content_link" href="">
+                <img class="video_thumbnail" src="{% static 'tube/img/no-img.png' %}" alt="動画タイトル">
+                <div class="video_title">タイトル</div>
+            </a>
+        </div>
+    </div>
+    {% endif %}
+
+
+    <h2 class="violet">新着動画</h2>
+
+    <div class="video_content_list">
+
+        {% for latest in latests %}
+        <div class="video_content">
+            <a class="video_content_link" href="{% url 'tube:single' latest.id %}">
+                {% if latest.thumbnail %}
+                <img class="video_thumbnail" src="/media/{{ latest.thumbnail }}" alt="{{ latest.title }}">
+                {% else %}
+                <img class="video_thumbnail" src="{% static 'tube/img/no-img.png' %}" alt="{{ latest.title }}">
+                {% endif %}
+                <div class="video_title">{{ latest.title }}</div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="video_content">動画がありません</div>
+        {% endfor %}
+
+    </div>
+
+
+    {% if follows %}
+    <h2 class="violet">フォローしたユーザーの新着動画</h2>
+
+    <div class="video_content_list">
+
+        {% for follow in follows %}
+        <div class="video_content">
+            <a class="video_content_link" href="{% url 'tube:single' follow.id %}">
+                {% if follow.thumbnail %}
+                <img class="video_thumbnail" src="/media/{{ follow.thumbnail }}" alt="{{ follow.title }}">
+                {% else %}
+                <img class="video_thumbnail" src="{% static 'tube/img/no-img.png' %}" alt="{{ follow.title }}">
+                {% endif %}
+                <div class="video_title">{{ follow.title }}</div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="video_content">動画がありません</div>
+        {% endfor %}
+
+    </div>
+    {% endif %}
+
+
+    {% if blockusers %}
+    <h2 class="violet">ブロックしたユーザーの新着動画</h2>
+
+    <div class="video_content_list">
+
+        {% for blockuser in blockusers %}
+        <div class="video_content">
+            <a class="video_content_link" href="{% url 'tube:single' blockuser.id %}">
+                {% if blockuser.thumbnail %}
+                <img class="video_thumbnail" src="/media/{{ blockuser.thumbnail }}" alt="{{ blockuser.title }}">
+                {% else %}
+                <img class="video_thumbnail" src="{% static 'tube/img/no-img.png' %}" alt="{{ blockuser.title }}">
+                {% endif %}
+                <div class="video_title">{{ blockuser.title }}</div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="video_content">動画がありません</div>
+        {% endfor %}
+
+    </div>
+
+    <h2 class="violet">ブロックしていないユーザーの新着動画</h2>
+    <div class="video_content_list">
+
+        {% for not_blockuser in not_blockusers %}
+        <div class="video_content">
+            <a class="video_content_link" href="{% url 'tube:single' not_blockuser.id %}">
+                {% if not_blockuser.thumbnail %}
+                <img class="video_thumbnail" src="/media/{{ not_blockuser.thumbnail }}" alt="{{ not_blockuser.title }}">
+                {% else %}
+                <img class="video_thumbnail" src="{% static 'tube/img/no-img.png' %}" alt="{{ not_blockuser.title }}">
+                {% endif %}
+                <div class="video_title">{{ not_blockuser.title }}</div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="video_content">動画がありません</div>
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+
+{% endblock %}
+
+
+
+

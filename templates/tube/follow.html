@@ -1,0 +1,12 @@
+
+
+    <h3>〇follow.htmlより</h3>
+
+    {% for f in followers %}
+        <p>{{ f.id }}:フォローしたユーザーの動画のIDが出ている</p>
+        <p>{{ f.title }}：動画のタイトル</p>
+        <p>{{ f.user.handle_name }}：動画投稿者のハンドルネーム</p>
+        {# followers = FollowUser.objects.all() より#}
+
+    {% endfor %}
+

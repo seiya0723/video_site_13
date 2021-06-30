@@ -1,0 +1,26 @@
+{% load param_change %}
+
+{% for comment in comments %}
+<div>{{ comment.content|linebreaksbr }}</div>
+
+<a href="{% url 'users:single' comment.user.id %}"> {# TODO:indexページではなくて、投稿者の動画ページへ #}
+    {% if comment.user.usericon %}
+        <p><img class="usericon" src="/media/{{ comment.user.usericon }}" alt="icon"></p>
+        <p> {{ comment.user.handle_name }} </p>
+    {% else %}
+        <p><i class="fas fa-user comment_icon"></i></p>
+        <p> {{ comment.user.handle_name }} </p>
+    {% endif %}
+</a>
+
+<div>{{ comment.dt|date:"Y年m月d日 H時i分s秒" }}</div>
+
+{% endfor %}
+
+{% if comments %}
+<form id="comment_pagination_area" class="pagination_area" action="{% url 'tube:single_mod' video.id %}" method="GET">
+    {% generate_pagelink_comment request "page" "1" comments.paginator.num_pages comments.number %}
+</form>
+
+{% endif %}
+
